@@ -1,0 +1,20 @@
+[package]
+name = "day20"
+version = "0.1.0"
+edition = "2021"
+authors = ["Lux Amelia Phifollen"]
+description = "My Rust solutions for day 20 of Advent of Code 2022"
+keywords = ["algorithmics", "advent-of-code"]
+categories = ["algorithmics"]
+repository = "https://github.com/Lymkwi/AdventOfCode-2022/"
+license = "ACSL"
+readme = "../README.md"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+[dependencies.common]
+path = "../common"
+
+[lib]

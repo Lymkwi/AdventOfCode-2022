@@ -1,0 +1,15 @@
+[package]
+name = "common"
+version = "0.1.0"
+edition = "2021"
+authors = ["Lux Amelia Phifollen"]
+description = "The common boilerplate code for my Advent of Code Rust solutions"
+license = "ACSL"
+repository = "https://github.com/Lymkwi/AdventOfCode-2022/"
+keywords = ["algorithmics", "advent-of-code"]
+categories = ["algorithmics"]
+readme = "../README.md"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
