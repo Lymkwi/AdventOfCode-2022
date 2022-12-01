@@ -27,13 +27,23 @@
 /// This function returns a `usize`, the result for part one of advent of code
 /// day 01.
 ///
+/// It is going to parse the data per the problem's format, i.e., a list of
+/// numbers that are one each line, with paragraphs separating the count for
+/// each individual elf.
+///
 /// # Panics
 ///
 /// If any conversion assumed to be valid with the input fails, panics.
 #[must_use]
 #[allow(clippy::missing_const_for_fn)]
 pub fn solve_part_one(data: &str) -> usize {
-    0
+	data.trim().split("\n\n")
+		.map(|elf_inv_str| elf_inv_str.split('\n')
+			 .map(|cal| str::parse::<usize>(cal).unwrap())
+			 .sum()
+		)
+		.max()
+		.expect("No values found!!")
 }
 
 /// Solve Advent of Code day 01 part two
@@ -47,12 +57,25 @@ pub fn solve_part_one(data: &str) -> usize {
 /// This function returns a `usize`, the result for part
 /// two of advent of code day 01.
 ///
+/// It is going to parse the data per the problem's format, i.e., a list of
+/// numbers that are one each line, with paragraphs separating the count for
+/// each individual elf.
+///
+/// The return value is the sum of the top 3 inventory total counts.
+///
 /// # Panics
 ///
 /// If any conversion assumed to be valid with the input fails, panics.
 #[must_use]
 #[allow(clippy::missing_const_for_fn)]
 pub fn solve_part_two(data: &str) -> usize {
-    0
+	let mut top = data.trim().split("\n\n")
+		.map(|elf_inv_str| elf_inv_str.split('\n')
+			 .map(|cal| str::parse::<usize>(cal).unwrap())
+			 .sum::<usize>()
+		)
+		.collect::<Vec<usize>>();
+	top.sort_by(|a, b| b.partial_cmp(a).unwrap());
+	top.iter().take(3).sum()
 }
 
