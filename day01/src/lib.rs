@@ -61,7 +61,7 @@ pub fn solve_part_one(data: &str) -> usize {
 /// numbers that are one each line, with paragraphs separating the count for
 /// each individual elf.
 ///
-/// The return value is the sum of the top 3 inventory total counts.
+/// The return value is the sum of the top 3 inventory total count
 ///
 /// # Panics
 ///
