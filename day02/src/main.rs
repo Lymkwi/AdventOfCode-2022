@@ -20,6 +20,6 @@ mod test {
     use super::*;
     use common::test;
 
-    test!(day02_01_example1, 1, 0, "");
-    test!(day02_02_example1, 2, 0, "");
+    test!(day02_01_example1, 1, 15, "A Y\nB X\nC Z\n");
+    test!(day02_02_example1, 2, 12, "A Y\nB X\nC Z\n");
 }
