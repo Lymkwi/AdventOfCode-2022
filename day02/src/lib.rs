@@ -16,6 +16,8 @@
 // All of this code is globally very over-engineered, but I want to flex my Rust
 // muscles more than I want to make efficient code at the moment
 
+use std::cmp::Ordering;
+
 /// Solve Advent of Code day 02 part one
 ///
 /// # Arguments
@@ -50,9 +52,9 @@ pub fn solve_part_one(data: &str) -> usize {
 			let theirs = Hand::new(*its.first().unwrap());
 			let mine = Hand::new(*its.get(2).unwrap());
 			let outcome = match mine.partial_cmp(&theirs).unwrap() {
-				std::cmp::Ordering::Less => 0,
-				std::cmp::Ordering::Equal => 3,
-				std::cmp::Ordering::Greater => 6
+				Ordering::Less => 0,
+				Ordering::Equal => 3,
+				Ordering::Greater => 6
 			};
 			let hand_score = match mine {
 				Hand::Rock => 1,
@@ -106,27 +108,27 @@ impl Hand {
 }
 
 impl PartialOrd for Hand {
-	fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+	fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
 		Some(match self {
 			Self::Rock => {
 				match other {
-					Self::Rock => std::cmp::Ordering::Equal,
-					Self::Paper => std::cmp::Ordering::Less,
-					Self::Scissors => std::cmp::Ordering::Greater
+					Self::Rock => Ordering::Equal,
+					Self::Paper => Ordering::Less,
+					Self::Scissors => Ordering::Greater
 				}
 			},
 			Self::Paper => {
 				match other {
-					Self::Rock => std::cmp::Ordering::Greater,
-					Self::Paper => std::cmp::Ordering::Equal,
-					Self::Scissors => std::cmp::Ordering::Less
+					Self::Rock => Ordering::Greater,
+					Self::Paper => Ordering::Equal,
+					Self::Scissors => Ordering::Less
 				}
 			},
 			Self::Scissors => {
 				match other {
-					Self::Rock => std::cmp::Ordering::Less,
-					Self::Paper => std::cmp::Ordering::Greater,
-					Self::Scissors => std::cmp::Ordering::Equal
+					Self::Rock => Ordering::Less,
+					Self::Paper => Ordering::Greater,
+					Self::Scissors => Ordering::Equal
 				}
 			}
 		})

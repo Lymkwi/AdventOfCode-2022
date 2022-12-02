@@ -13,7 +13,7 @@ This code in organized with :
 
 Stars obtained :
 ```
-⭐⭐⬛⬛⬛⬛⬛⬛⬛⬛
+⭐⭐⭐⭐⬛⬛⬛⬛⬛⬛
 ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
 ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
 ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
@@ -23,8 +23,8 @@ Stars obtained :
 Run times (on a ThinkPad X230 with Intel i7-3520M) :
 |        | Day 01 | Day 02 | Day 03 | Day 04 | Day 05 |
 |--------|--------|--------|--------|--------|--------|
-| Part 1 | 53.8 µs|        |        |        |        |
-| Part 2 | 66.0 µs|        |        |        |        |
+| Part 1 | 53.8 µs|  110 µs|        |        |        |
+| Part 2 | 66.0 µs|  110 µs|        |        |        |
 |        |**Day 06**|**Day 07**|**Day 08**|**Day 09**|**Day 10**|
 | Part 1 |        |        |        |        |        |
 | Part 2 |        |        |        |        |        |
