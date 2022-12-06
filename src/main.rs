@@ -42,8 +42,8 @@ mod test {
 	result_tests!(day01, day01_one, day01_two, 01, 72511, 212117);
 	result_tests!(day02, day02_one, day02_two, 02, 15422, 15442);
 	result_tests!(day03, day03_one, day03_two, 03, 8394, 2413);
-	result_tests!(day04, day04_one, day04_two, 04, 0, 0);
-	result_tests!(day05, day05_one, day05_two, 05, 0, 0);
+	result_tests!(day04, day04_one, day04_two, 04, 584, 933);
+	result_tests!(day05, day05_one, day05_two, 05, "CNSZFDVLJ", "QNDWLMGNS");
 	result_tests!(day06, day06_one, day06_two, 06, 0, 0);
 	result_tests!(day07, day07_one, day07_two, 07, 0, 0);
 	result_tests!(day08, day08_one, day08_two, 08, 0, 0);
