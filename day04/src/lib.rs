@@ -91,12 +91,10 @@ pub fn solve_part_two(data: &str) -> usize {
 				} else {
 					None
 				}
+			} else if range_two_end >= range_one_start {
+				Some(())
 			} else {
-				if range_two_end >= range_one_start {
-					Some(())
-				} else {
-					None
-				}
+				None
 			}
 		}) // split and parse
 		.count()
