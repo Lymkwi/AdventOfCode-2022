@@ -14,7 +14,7 @@ This code in organized with :
 Stars obtained :
 ```
 ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
-⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+⭐⭐⬛⬛⬛⬛⬛⬛⬛⬛
 ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
 ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
 ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
