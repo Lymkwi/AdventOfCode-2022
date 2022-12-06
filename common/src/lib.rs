@@ -19,7 +19,7 @@ pub fn read_data(filepath: &str) -> std::io::Result<String> {
     let mut file = File::open(filepath)?;
     let mut contents: String = String::new();
     file.read_to_string(&mut contents)?;
-    Ok(contents.trim().to_string().replace('\r', ""))
+    Ok(contents.trim_end().to_string().replace('\r', ""))
 }
 
 #[macro_export]
