@@ -51,7 +51,6 @@ pub fn solve_part_one(data: &str) -> usize {
 /// Give the score of each character
 fn char_score(c: char) -> Option<usize> {
 	if c.is_ascii_alphabetic() {
-		//let code_try: Result<u32, _> = c.try_into();
 		c.try_into().map_or(None,
 							|code: u32| Some(usize::try_from(
 									code - if c.is_ascii_uppercase() {
@@ -60,10 +59,6 @@ fn char_score(c: char) -> Option<usize> {
 										96
 									}).unwrap()
 								))
-		//match code_try {
-			//Err(_) => None,
-			//Ok(code) => Some(usize::try_from(code - if c.is_ascii_uppercase() { 65 - 27 } else { 96 }).unwrap())
-		//}
 	} else {
 		None
 	}
