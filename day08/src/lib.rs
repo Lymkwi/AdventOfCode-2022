@@ -213,8 +213,8 @@ pub fn solve_part_two(data: &str) -> usize {
 						ny += ydiff;
 						nx += xdiff;
 					}
-					println!("({}, {}) breaks ({}, {}) with {}",
-								ypos, xpos, ydiff, xdiff, count);
+					//println!("({}, {}) breaks ({}, {}) with {}",
+								//ypos, xpos, ydiff, xdiff, count);
 					count
 				})
 				.fold(1, |s, v| v * s);
