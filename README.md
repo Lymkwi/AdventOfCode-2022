@@ -14,7 +14,7 @@ This code in organized with :
 Stars obtained :
 ```
 ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
-⭐⭐⭐⭐⭐⭐⭐⭐⬛⬛
+⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
 ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
 ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
 ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
@@ -26,8 +26,8 @@ Run times (on a ThinkPad X230 with Intel i7-3520M) :
 | Part 1 | 53.8 µs|  110 µs|  345 µs|   109 µs|99.5 µs|
 | Part 2 | 66.0 µs|  110 µs|  687 µs|   103 µs| 108 µs|
 |        |**Day 06**|**Day 07**|**Day 08**|**Day 09**|**Day 10**|
-| Part 1 | 6.34 µs|  556 µs| 5.23 ms|  906 µs|        |
-| Part 2 |  732 µs|  561 µs| 6.94 ms| 1.17 ms|        |
+| Part 1 | 6.34 µs|  556 µs| 5.23 ms|  906 µs| 7.94 µs|
+| Part 2 |  732 µs|  561 µs| 6.94 ms| 1.17 ms| 27.0 µs|
 |        |**Day 11**|**Day 12**|**Day 13**|**Day 14**|**Day 15**|
 | Part 1 |        |        |        |        |        |
 | Part 2 |        |        |        |        |        |
