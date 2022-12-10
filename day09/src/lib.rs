@@ -127,7 +127,7 @@ impl RopeModel {
 		}
 	}
 
-	fn tail_positions(&self) -> &HashSet<(isize, isize)> {
+	const fn tail_positions(&self) -> &HashSet<(isize, isize)> {
 		&self.visited
 	}
 }
