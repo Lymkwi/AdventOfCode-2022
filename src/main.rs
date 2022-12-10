@@ -48,7 +48,7 @@ mod test {
 	result_tests!(day07, day07_one, day07_two, 07, 1077191, 5649896);
 	result_tests!(day08, day08_one, day08_two, 08, 1717, 321975);
 	result_tests!(day09, day09_one, day09_two, 09, 6243, 2630);
-	result_tests!(day10, day10_one, day10_two, 10, 0, 0);
+	result_tests!(day10, day10_one, day10_two, 10, 16880, "###..#..#..##..####..##....##.###..###..\n#..#.#.#..#..#....#.#..#....#.#..#.#..#.\n#..#.##...#..#...#..#..#....#.###..#..#.\n###..#.#..####..#...####....#.#..#.###..\n#.#..#.#..#..#.#....#..#.#..#.#..#.#.#..\n#..#.#..#.#..#.####.#..#..##..###..#..#.");
 	result_tests!(day11, day11_one, day11_two, 11, 0, 0);
 	result_tests!(day12, day12_one, day12_two, 12, 0, 0);
 	result_tests!(day13, day13_one, day13_two, 13, 0, 0);
