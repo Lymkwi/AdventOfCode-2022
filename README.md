@@ -29,8 +29,8 @@ Run times (on a ThinkPad X230 with Intel i7-3520M) :
 | Part 1 | 6.34 µs|  556 µs| 5.23 ms|  906 µs| 7.94 µs|
 | Part 2 |  732 µs|  561 µs| 6.94 ms| 1.17 ms| 27.0 µs|
 |        |**Day 11**|**Day 12**|**Day 13**|**Day 14**|**Day 15**|
-| Part 1 | 44.6 µs|        |        |        |        |
-| Part 2 | 20.3 ms|        |        |        |        |
+| Part 1 | 44.6 µs| 2.12 ms|        |        |        |
+| Part 2 | 20.3 ms| 2.03 ls|        |        |        |
 |        |**Day 16**|**Day 17**|**Day 18**|**Day 19**|**Day 20**|
 | Part 1 |        |        |        |        |        |
 | Part 2 |        |        |        |        |        |
