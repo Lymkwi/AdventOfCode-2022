@@ -52,7 +52,7 @@ mod test {
 	result_tests!(day11, day11_one, day11_two, 11, 61005, 20567144694);
 	result_tests!(day12, day12_one, day12_two, 12, 380, 375);
 	result_tests!(day13, day13_one, day13_two, 13, 6101, 21909);
-	result_tests!(day14, day14_one, day14_two, 14, 0, 0);
+	result_tests!(day14, day14_one, day14_two, 14, 1298, 25585);
 	result_tests!(day15, day15_one, day15_two, 15, 0, 0);
 	result_tests!(day16, day16_one, day16_two, 16, 0, 0);
 	result_tests!(day17, day17_one, day17_two, 17, 0, 0);
