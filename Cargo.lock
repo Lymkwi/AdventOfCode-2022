@@ -327,6 +327,9 @@ name = "day15"
 version = "0.1.0"
 dependencies = [
  "common",
+ "lazy_static",
+ "rayon",
+ "regex",
 ]
 
 [[package]]
@@ -334,6 +337,8 @@ name = "day16"
 version = "0.1.0"
 dependencies = [
  "common",
+ "lazy_static",
+ "regex",
 ]
 
 [[package]]
