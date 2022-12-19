@@ -121,7 +121,7 @@ struct MazeState {
 
 impl MazeState {
 	fn build(minutes: usize, pressure: usize, /*orders: String,*/ current: String, power: usize, open: Vec<String>) -> Self {
-		Self { minutes, pressure, current, power, open/*, orders*/}
+		Self { minutes, pressure, power, current, open}
 	}
 }
 
@@ -312,7 +312,7 @@ pub fn solve_part_two(data: &str) -> usize {
 
 	// So.. long time no see, itertools
 	// No need to simulate both at once :)
-	let nodes = non_null_valves.iter().map(|x| x.to_string()).collect::<HashSet<String>>();
+	let nodes = non_null_valves.iter().map(std::string::ToString::to_string).collect::<HashSet<String>>();
 	//println!("{} nodes", nodes.len());
 	let mut total_best = 0;
 	for size in (nodes.len()/4 ..= nodes.len()/2).rev() {
@@ -321,7 +321,7 @@ pub fn solve_part_two(data: &str) -> usize {
 		//println!("{} combinations", combinations.clone().count());
 		for human_seen in combinations {
 			let human_seen: Vec<String> = human_seen.into_iter().cloned().collect();
-			let elephant_seen = nodes.iter().filter(|n| !human_seen.contains(&n))
+			let elephant_seen = nodes.iter().filter(|n| !human_seen.contains(n))
 				.cloned()
 				.collect::<Vec<String>>();
 			// Run
