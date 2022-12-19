@@ -313,12 +313,12 @@ pub fn solve_part_two(data: &str) -> usize {
 	// So.. long time no see, itertools
 	// No need to simulate both at once :)
 	let nodes = non_null_valves.iter().map(|x| x.to_string()).collect::<HashSet<String>>();
-	println!("{} nodes", nodes.len());
+	//println!("{} nodes", nodes.len());
 	let mut total_best = 0;
 	for size in (nodes.len()/4 ..= nodes.len()/2).rev() {
-		println!("Size = {size}");
+		//println!("Size = {size}");
 		let combinations = nodes.iter().combinations(size);
-		println!("{} combinations", combinations.clone().count());
+		//println!("{} combinations", combinations.clone().count());
 		for human_seen in combinations {
 			let human_seen: Vec<String> = human_seen.into_iter().cloned().collect();
 			let elephant_seen = nodes.iter().filter(|n| !human_seen.contains(&n))
@@ -326,10 +326,10 @@ pub fn solve_part_two(data: &str) -> usize {
 				.collect::<Vec<String>>();
 			// Run
 			let human_best = compute(&maze, &distances, None, 26, human_seen, false).0;
-			let elephant_best = compute(&maze, &distances, Some(total_best - human_best), 26, elephant_seen, false).0;
+			let elephant_best = compute(&maze, &distances, usize::checked_sub(total_best, human_best), 26, elephant_seen, false).0;
 			let best = human_best + elephant_best;
 			if best > total_best {
-				println!("New best: {best}");
+				//println!("New best: {best}");
 				total_best = best;
 			}
 		}
