@@ -14,10 +14,11 @@
 #![deny(rustdoc::missing_crate_level_docs)]
 
 use std::{
-	cmp::Ordering,
+	cmp::{Ordering, Reverse},
 	collections::{HashMap, HashSet, BinaryHeap}
 };
 
+use itertools::Itertools;
 use lazy_static::lazy_static;
 use regex::Regex;
 
@@ -65,6 +66,7 @@ pub fn solve_part_one(data: &str) -> usize {
 		// Ew
 		distances.insert((*valve).to_string(), HashMap::new());
 	}
+	// Djikstra to establish initial distances used for everything else
 	for valve_one in &non_null_valves {
 		for valve_two in &non_null_valves {
 			// Ew
@@ -74,88 +76,13 @@ pub fn solve_part_one(data: &str) -> usize {
 			let dist = distance(&maze, &valve_one, &valve_two);
 			distances.get_mut(&valve_one).expect("fetchable")
 					.insert(valve_two.clone(), dist);
-			distances.get_mut(&valve_two).expect("fetchable")
-					.insert(valve_one.clone(), dist);
+			//distances.get_mut(&valve_two).expect("fetchable")
+					//.insert(valve_one.clone(), dist);
+			assert_eq!(distance(&maze, &valve_one, &valve_two), distance(&maze, &valve_two, &valve_one));
 		}
 	}
 
-	//let mut memo: HashMap<(String, usize, Vec<String>), usize> = HashMap::new();
-
-	// Let's start backwards
-	//let memo: HashMap<(String, usize), (usize, Vec<String>)> = HashMap::new();
-
-	let mut states: BinaryHeap<MazeState> = BinaryHeap::new();
-	let mut seen: HashSet<MazeState> = HashSet::new();
-	let mut best: usize = 0;
-
-	let max_power: usize = maze.values().map(|(p, _)| p).sum();
-
-	states.push(MazeState::default());
-
-	while !states.is_empty() {
-		let state = states.pop().expect("At least one state");
-		let pressure = state.pressure;
-		let minutes = state.minutes;
-		if minutes == 0 {
-			if pressure > best {
-				best = best.max(pressure);
-				println!("{state:?}");
-				println!("Found max {best} ({} states)", states.len());
-			}
-			continue;
-		}
-		let power = state.power;
-		if pressure + max_power * minutes <= best {
-			// Don't bother
-			continue;
-		}
-		let open = state.open.clone();
-		let current = state.current;
-	
-		let press = maze[&current].0;
-	
-		// Maybe open?
-		if !open.contains(&current) {
-			// press cannot be zero
-			// Spend a minute
-			let minutes = minutes - 1;
-			let pressure = pressure + power;
-			let power = power + press;
-			let mut new_open = open.clone(); new_open.push(current.clone());
-			let new_state = MazeState::build(minutes, pressure, current.clone(), power, new_open);
-			if !seen.contains(&new_state) {
-				seen.insert(new_state.clone());
-				states.push(new_state);
-			}
-		}
-
-		// Where can we go
-		for (target, cost) in &distances[&current] {
-			// This will re-add "AA" as a state we can get to but it's always
-			// either a waste of time or a necessary step to the right output
-			// so...
-			if *cost > minutes {
-				// no need
-				continue;
-			}
-			let pressure = pressure + cost * power;
-			let new_state = MazeState::build(minutes-cost, pressure, target.clone(), power, open.clone());
-			if !seen.contains(&new_state) {
-				seen.insert(new_state.clone());
-				states.push(new_state);
-			}
-		}
-
-		// What if we just... stopped?
-		let pressure = pressure + minutes * power;
-		let new_state = MazeState::build(0, pressure, current, power, open.clone());
-		if !seen.contains(&new_state) {
-			seen.insert(new_state.clone());
-			states.push(new_state);
-		}
-	}
-
-	best
+	compute(&maze, &distances, None, 30, Vec::new(), false).0
 }
 
 fn distance(maze: &HashMap<String, (usize, Vec<String>)>, a: &str, b: &str) -> usize {
@@ -163,18 +90,18 @@ fn distance(maze: &HashMap<String, (usize, Vec<String>)>, a: &str, b: &str) -> u
 	if a == b {
 		return 0;
 	}
-	let mut states: BinaryHeap<(usize, String)> = BinaryHeap::new();
+	let mut states: BinaryHeap<Reverse<(usize, String)>> = BinaryHeap::new();
 	let mut visited: HashSet<String> = HashSet::new();
-	states.push((0, String::from(a)));
+	states.push(Reverse((0, String::from(a))));
 	while !states.is_empty() {
-		let (cost, point) = states.pop().expect("At least one node");
+		let Reverse((cost, point)) = states.pop().expect("At least one node");
 		let conns = &maze[&point].1;
 		for c in conns {
 			if c == b {
-				return cost + 1;
+				return cost+1;
 			}
 			if !visited.contains(c) {
-				states.push((cost+1, c.clone()));
+				states.push(Reverse((cost+1, c.clone())));
 				visited.insert(c.clone());
 			}
 		}
@@ -193,8 +120,8 @@ struct MazeState {
 }
 
 impl MazeState {
-	fn build(minutes: usize, pressure: usize, current: String, power: usize, open: Vec<String>) -> Self {
-		Self { minutes, pressure, power, current, open }
+	fn build(minutes: usize, pressure: usize, /*orders: String,*/ current: String, power: usize, open: Vec<String>) -> Self {
+		Self { minutes, pressure, current, power, open/*, orders*/}
 	}
 }
 
@@ -224,6 +151,108 @@ impl Ord for MazeState {
 	}
 }
 
+fn compute(
+	maze: &HashMap<String, (usize, Vec<String>)>,
+	distances: &HashMap<String, HashMap<String, usize>>,
+	early_cut: Option<usize>, // score that you need to be able to theoretically
+							  // reach in order to be viable
+	start_minutes: usize,
+	open: Vec<String>,
+	memorize: bool
+) -> (usize, Option<HashSet<MazeState>>) {
+	// This is all of the solving code
+	let mut states: Vec<MazeState> = Vec::new();
+	let mut seen: HashSet<MazeState> = HashSet::new();
+	let mut best: usize = 0;
+
+	let max_power: usize = maze.iter()
+		.filter_map(|(n, (p, _))|
+					if open.contains(n) {
+						None
+					} else {
+						Some(p)
+					}).sum();
+	let mut best_states: HashSet<MazeState> = HashSet::new();
+
+	states.push(MazeState::build(start_minutes, 0, "AA".into(), 0, open));
+
+	while !states.is_empty() {
+		let state = states.pop().expect("At least one state");
+		let pressure = state.pressure;
+		let minutes = state.minutes;
+		let power = state.power;
+		let open = state.open.clone();
+		if minutes == 0 {
+			if pressure > best {
+				best = best.max(pressure);
+				if memorize {
+					best_states.clear();
+					best_states.insert(state);
+				}
+				//println!("{state:?}");
+				//println!("Found max {best} ({} states)", states.len());
+			} else if memorize && pressure == best {
+				best_states.insert(state);
+			}
+			continue;
+		}
+		let current = state.current;
+
+		if pressure + max_power * minutes <= best {
+			// No need to go on
+			continue;
+		}
+		// Check the early cut
+		// If an early cut is set and impossible to reach, the result we get
+		// is necessarily *not* actually the best, but we still get there faster
+		if let Some(cut) = early_cut {
+			if pressure + max_power * minutes <= cut {
+				// No need to bother
+				continue;
+			}
+		}
+
+		// Where can we go and open?
+		for (target, cost) in &distances[&current] {
+			// No need to go somewhere you already opened
+			if open.contains(target) {
+				continue;
+			}
+			// This will re-add "AA" as a state we can get to but it's always
+			// either a waste of time or a necessary step to the right output
+			// so...
+			if *cost+1 > minutes {
+				// no need
+				continue;
+			}
+			// Go there and open
+			let pressure = pressure + (cost + 1) * power;
+			let mut new_open = open.clone();
+			new_open.push(target.clone());
+			let new_state = MazeState::build(
+				minutes-cost-1, pressure,
+				target.clone(),
+				power + maze[target].0, new_open
+			);
+			if !seen.contains(&new_state) {
+				seen.insert(new_state.clone());
+				states.push(new_state);
+			}
+		}
+
+		// What if we just... stopped?
+		let new_state = MazeState::build(0, pressure + minutes * power,
+										 //format!("{}, and wait", state.orders),
+										 current, power, open.clone());
+		if !seen.contains(&new_state) {
+			seen.insert(new_state.clone());
+			states.push(new_state);
+		}
+	}
+
+	(best, if memorize { Some(best_states) } else { None })
+}
+
 /// Solve Advent of Code day 16 part two
 ///
 /// # Arguments
@@ -241,7 +270,69 @@ impl Ord for MazeState {
 #[must_use]
 #[allow(clippy::missing_const_for_fn)]
 pub fn solve_part_two(data: &str) -> usize {
-	0
-}
+	let maze = data.trim().split('\n')
+		.map(|line| {
+			let caps = LINE.captures(line).unwrap();
+			(
+				String::from(&caps[1]),
+				(caps[2].parse::<usize>().unwrap(),
+				caps[5].split(", ").map(String::from).collect::<Vec<String>>())
+			)
+		}).collect::<HashMap<String, (usize, Vec<String>)>>();
 
-// vim: set tw=80:
+	// So, first, reduce this fucking map because it's unbearable to have so
+	// many f*cking empty nodes
+	let mut non_null_valves = maze.iter()
+		.filter_map(|(valve, (press, _))| {
+			if *press > 0 { Some(valve.as_str()) } else { None }
+		})
+		.collect::<Vec<&str>>();
+	non_null_valves.push("AA"); // We need AA because we start from there
+
+	let mut distances: HashMap<String, HashMap<String, usize>> = HashMap::new();
+	for valve in &non_null_valves {
+		// Ew
+		distances.insert((*valve).to_string(), HashMap::new());
+	}
+	// Djikstra to establish initial distances used for everything else
+	for valve_one in &non_null_valves {
+		for valve_two in &non_null_valves {
+			// Ew
+			if valve_one == valve_two { continue; }
+			let valve_one = (*valve_one).to_string();
+			let valve_two = (*valve_two).to_string();
+			let dist = distance(&maze, &valve_one, &valve_two);
+			distances.get_mut(&valve_one).expect("fetchable")
+					.insert(valve_two.clone(), dist);
+			//distances.get_mut(&valve_two).expect("fetchable")
+					//.insert(valve_one.clone(), dist);
+			assert_eq!(distance(&maze, &valve_one, &valve_two), distance(&maze, &valve_two, &valve_one));
+		}
+	}
+
+	// So.. long time no see, itertools
+	// No need to simulate both at once :)
+	let nodes = non_null_valves.iter().map(|x| x.to_string()).collect::<HashSet<String>>();
+	println!("{} nodes", nodes.len());
+	let mut total_best = 0;
+	for size in (nodes.len()/4 ..= nodes.len()/2).rev() {
+		println!("Size = {size}");
+		let combinations = nodes.iter().combinations(size);
+		println!("{} combinations", combinations.clone().count());
+		for human_seen in combinations {
+			let human_seen: Vec<String> = human_seen.into_iter().cloned().collect();
+			let elephant_seen = nodes.iter().filter(|n| !human_seen.contains(&n))
+				.cloned()
+				.collect::<Vec<String>>();
+			// Run
+			let human_best = compute(&maze, &distances, None, 26, human_seen, false).0;
+			let elephant_best = compute(&maze, &distances, Some(total_best - human_best), 26, elephant_seen, false).0;
+			let best = human_best + elephant_best;
+			if best > total_best {
+				println!("New best: {best}");
+				total_best = best;
+			}
+		}
+	}
+	total_best
+}
