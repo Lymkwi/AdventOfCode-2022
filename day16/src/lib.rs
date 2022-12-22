@@ -110,22 +110,22 @@ fn distance(maze: &HashMap<String, (usize, Vec<String>)>, a: &str, b: &str) -> u
 }
 
 #[derive(Hash, PartialEq, Eq, Debug, Clone)]
-struct MazeState {
+struct MazeState<'a> {
 	minutes: usize,
 	pressure: usize,
 	power: usize,
 	current: String,
-	open: Vec<String>,
+	open: Vec<&'a str>,
 	//orders: String, // that was for debugging
 }
 
-impl MazeState {
-	fn build(minutes: usize, pressure: usize, /*orders: String,*/ current: String, power: usize, open: Vec<String>) -> Self {
+impl<'mz> MazeState<'mz> {
+	fn build(minutes: usize, pressure: usize, /*orders: String,*/ current: String, power: usize, open: Vec<&'mz str>) -> Self {
 		Self { minutes, pressure, power, current, open}
 	}
 }
 
-impl Default for MazeState {
+impl<'mz> Default for MazeState<'mz> {
 	fn default() -> Self {
 		Self {
 			minutes: 30,
@@ -137,7 +137,7 @@ impl Default for MazeState {
 	}
 }
 
-impl PartialOrd for MazeState {
+impl PartialOrd for MazeState<'_> {
 	fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
 		let mine = self.minutes * self.power + self.pressure;
 		let theirs = other.minutes * other.power + other.pressure;
@@ -145,36 +145,43 @@ impl PartialOrd for MazeState {
 	}
 }
 
-impl Ord for MazeState {
+impl Ord for MazeState<'_> {
 	fn cmp(&self, other: &Self) -> Ordering {
 		self.partial_cmp(other).expect("usize is Ord")
 	}
 }
 
-fn compute(
+fn compute<'a>(
 	maze: &HashMap<String, (usize, Vec<String>)>,
-	distances: &HashMap<String, HashMap<String, usize>>,
+	distances: &'a HashMap<String, HashMap<String, usize>>,
 	early_cut: Option<usize>, // score that you need to be able to theoretically
 							  // reach in order to be viable
 	start_minutes: usize,
-	open: Vec<String>,
+	open: Vec<&'a str>,
 	memorize: bool
-) -> (usize, Option<HashSet<MazeState>>) {
+) -> (usize, Option<HashSet<MazeState<'a>>>) {
 	// This is all of the solving code
-	let mut states: Vec<MazeState> = Vec::new();
-	let mut seen: HashSet<MazeState> = HashSet::new();
 	let mut best: usize = 0;
 
 	let max_power: usize = maze.iter()
 		.filter_map(|(n, (p, _))|
-					if open.contains(n) {
+					if open.contains(&n.as_str()) {
 						None
 					} else {
 						Some(p)
 					}).sum();
+	if let Some(cut) = early_cut {
+		if max_power * start_minutes <= cut {
+			// No need to bother
+			return (0, None);
+		}
+	}
+	let mut states: BinaryHeap<MazeState> = BinaryHeap::new();
+	let mut seen: HashSet<MazeState> = HashSet::new();
 	let mut best_states: HashSet<MazeState> = HashSet::new();
 
-	states.push(MazeState::build(start_minutes, 0, "AA".into(), 0, open));
+	states.push(MazeState::build(start_minutes, 0, "AA".into(), 0,
+		open));
 
 	while !states.is_empty() {
 		let state = states.pop().expect("At least one state");
@@ -215,7 +222,7 @@ fn compute(
 		// Where can we go and open?
 		for (target, cost) in &distances[&current] {
 			// No need to go somewhere you already opened
-			if open.contains(target) {
+			if open.contains(&target.as_str()) {
 				continue;
 			}
 			// This will re-add "AA" as a state we can get to but it's always
@@ -228,7 +235,7 @@ fn compute(
 			// Go there and open
 			let pressure = pressure + (cost + 1) * power;
 			let mut new_open = open.clone();
-			new_open.push(target.clone());
+			new_open.push(target);
 			let new_state = MazeState::build(
 				minutes-cost-1, pressure,
 				target.clone(),
@@ -315,15 +322,22 @@ pub fn solve_part_two(data: &str) -> usize {
 	let nodes = non_null_valves.iter().map(std::string::ToString::to_string).collect::<HashSet<String>>();
 	//println!("{} nodes", nodes.len());
 	let mut total_best = 0;
-	for size in (nodes.len()/4 ..= nodes.len()/2).rev() {
+	for size in (((nodes.len()/2)-1) ..= nodes.len()/2).rev() {
 		//println!("Size = {size}");
 		let combinations = nodes.iter().combinations(size);
 		//println!("{} combinations", combinations.clone().count());
 		for human_seen in combinations {
-			let human_seen: Vec<String> = human_seen.into_iter().cloned().collect();
-			let elephant_seen = nodes.iter().filter(|n| !human_seen.contains(n))
-				.cloned()
-				.collect::<Vec<String>>();
+			let human_seen: Vec<&str> = human_seen.iter().map(|s| s.as_str()).collect();
+			let elephant_seen = nodes.iter()
+				.filter_map(|n| {
+					let vq = n.as_str();
+					if human_seen.contains(&vq) {
+						None
+					} else {
+						Some(vq)
+					}
+				})
+				.collect::<Vec<&str>>();
 			// Run
 			let human_best = compute(&maze, &distances, None, 26, human_seen, false).0;
 			let elephant_best = compute(&maze, &distances, usize::checked_sub(total_best, human_best), 26, elephant_seen, false).0;
