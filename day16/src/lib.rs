@@ -176,8 +176,7 @@ fn compute<'a>(
 			return (0, None);
 		}
 	}
-	let mut states: BinaryHeap<MazeState> = BinaryHeap::new();
-	let mut seen: HashSet<MazeState> = HashSet::new();
+	let mut states: Vec<MazeState> = Vec::new();
 	let mut best_states: HashSet<MazeState> = HashSet::new();
 
 	states.push(MazeState::build(start_minutes, 0, "AA".into(), 0,
@@ -241,20 +240,14 @@ fn compute<'a>(
 				target.clone(),
 				power + maze[target].0, new_open
 			);
-			if !seen.contains(&new_state) {
-				seen.insert(new_state.clone());
-				states.push(new_state);
-			}
+			states.push(new_state);
 		}
 
 		// What if we just... stopped?
 		let new_state = MazeState::build(0, pressure + minutes * power,
 										 //format!("{}, and wait", state.orders),
 										 current, power, open.clone());
-		if !seen.contains(&new_state) {
-			seen.insert(new_state.clone());
-			states.push(new_state);
-		}
+		states.push(new_state);
 	}
 
 	(best, if memorize { Some(best_states) } else { None })
