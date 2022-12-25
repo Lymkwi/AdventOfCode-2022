@@ -16,7 +16,7 @@ Stars obtained :
 ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
 ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
 ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
-⭐⭐⬛⬛⭐⭐⬛⬛⬛⬛
+⭐⭐⬛⬛⭐⭐⬛⬛⭐⭐
 ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
 ```
 
@@ -32,8 +32,8 @@ Run times (on a ThinkPad X230 with Intel i7-3520M) :
 | Part 1 | 44.6 µs| 2.12 ms| 1.15 ms|  10.7 ms|  268 ms|
 | Part 2 | 20.3 ms| 2.03 ms| 1.60 ms|   278 ms|   1.5 s|
 |        |**Day 16**|**Day 17**|**Day 18**|**Day 19**|**Day 20**|
-| Part 1 |  898 ms|        | 1.31 ms|        |        |
-| Part 2 |  5.75 m|        | 5.50 ms|        |        |
+| Part 1 |  898 ms|        | 1.31 ms|        |   407 ms|
+| Part 2 |  5.75 m|        | 5.50 ms|        |   3.92 s|
 |        |**Day 21**|**Day 22**|**Day 23**|**Day 24**|**Day 25**|
 | Part 1 |        |        |        |        |        |
 | Part 2 |        |        |        |        |        |
