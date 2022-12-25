@@ -129,7 +129,7 @@ impl std::fmt::Display for Grid {
 				let (height, vis, _) = self.at(ypos, xpos);
 				if let Some(visible) = vis {
 					if visible {
-						write!(fmt, "{}", height)?;
+						write!(fmt, "{height}")?;
 					} else {
 						write!(fmt, " ")?;
 					}

@@ -70,10 +70,10 @@ impl Device {
 
 	fn update_screen(&mut self) {
 		// Count the pixel on screen (maybe)
-		let pixelbeam = (self.cyclecount % 40) as isize;
+		let pixelbeam = self.cyclecount % 40;
 		for dx in [-1, 0, 1] {
 			if self.value + dx == pixelbeam {
-				self.screen.insert((self.cyclecount as isize / 40, self.value + dx), true);
+				self.screen.insert((self.cyclecount / 40, self.value + dx), true);
 			}
 		}
 

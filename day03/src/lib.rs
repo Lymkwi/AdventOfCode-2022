@@ -44,7 +44,7 @@ pub fn solve_part_one(data: &str) -> usize {
 	data.trim().split('\n')
 		.map(|x| Rucksack::from_str(x).expect("Invalid rucksack"))
 		.map(|x| *x.common_item().expect("No intersection!"))
-		.map(|c| char_score(c).unwrap_or_else(|| panic!("Invalid char {}", c)))
+		.map(|c| char_score(c).unwrap_or_else(|| panic!("Invalid char {c}")))
 		.sum()
 }
 
